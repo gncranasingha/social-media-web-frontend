@@ -12,7 +12,23 @@ import { DotsVerticalIcon } from '@radix-ui/react-icons';
 import { useState } from 'react';
 import  EditPostDialog  from './EditPostDialog';
 
+
 export const PostCard = ({ post, onDelete, onUpdate }) => {
+
+   const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || '';
+
+   const buildUrl = (path) => {
+    if (!path) return null;
+    // Handle full URLs like from cloud storage
+    if (path.startsWith('http')) return path;
+    return `${apiBaseUrl}${path}`;
+  };
+
+   const getImageUrl = () => {
+    if (!post.image_url) return null;
+    return `${import.meta.env.VITE_API_BASE_URL || ''}${post.image_url}`;
+  };
+
   const { user } = useAuth();
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const isOwner = user?.id === post.user_id;
@@ -35,7 +51,7 @@ export const PostCard = ({ post, onDelete, onUpdate }) => {
           <Avatar>
             <AvatarImage 
               src={post.profile_picture ? 
-                `http://localhost:5000${post.profile_picture}` : 
+                `${import.meta.env.VITE_API_BASE_URL || ''}${post.profile_picture}` : 
                 undefined} 
             />
             <AvatarFallback>
@@ -76,7 +92,7 @@ export const PostCard = ({ post, onDelete, onUpdate }) => {
       {post.image_url && (
         <div className="mb-3 rounded-lg overflow-hidden border">
           <img
-            src={`http://localhost:5000${post.image_url}`}
+            src={getImageUrl()}
             alt="Post content"
             className="w-full max-h-96 object-contain"
           />

@@ -4,12 +4,16 @@ import { PostCard } from '../../components/posts/PostCard';
 import { CreatePost } from '../../components/posts/CreatePost';
 import { getPostsByUser, deletePost, updatePost } from '../../services/api';
 import { Skeleton } from "@/components/ui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
+import { useNavigate } from 'react-router-dom';
 
 export const Home = () => {
   const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const fetchPosts = async () => {
     setIsLoading(true);
@@ -47,20 +51,38 @@ export const Home = () => {
     }
   };
 
+  const handleProfileClick = () => {
+    navigate('/profile'); // Navigate to profile page
+  };
+
   useEffect(() => {
     if (user) {
       fetchPosts();
     }
   }, [user]);
 
-    console.log(posts);
-    
-
   return (
     <div className="max-w-2xl mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Your Feed</h1>
-        <CreatePost onPostCreated={fetchPosts} />
+        <div className="flex items-center gap-4">
+          <CreatePost onPostCreated={fetchPosts} />
+          <Button 
+            variant="ghost" 
+            className="p-0 rounded-full" 
+            onClick={handleProfileClick}
+          >
+            <Avatar className="h-10 w-10">
+              <AvatarImage 
+                src={user?.profile_picture} 
+                alt="User profile"
+              />
+              <AvatarFallback>
+                {user?.username?.charAt(0)?.toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+          </Button>
+        </div>
       </div>
       
       {error && (

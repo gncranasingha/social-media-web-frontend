@@ -3,8 +3,9 @@ import { AuthProvider } from './contexts/auth.context';
 import { Home } from './pages/home/Home';
 import { Login } from './pages/auth/Login';
 import { Register } from './pages/auth/Register';
-import { Profile } from './pages/profile/Profile';
+
 import { PrivateRoute } from './components/auth/PrivateRoute';
+import { Profile } from './pages/profile/Profile';
 
 export const App = () => {
   return (
