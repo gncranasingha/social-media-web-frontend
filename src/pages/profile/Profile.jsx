@@ -1,0 +1,114 @@
+import { useEffect, useState } from 'react';
+import { useAuth } from "../../contexts/auth.context"
+import { PostCard } from '../../components/posts/PostCard';
+import { getPostsByUser } from '../../services/api';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/avatar';
+import { Button } from '../../components/ui/button';
+import { EditProfileDialog } from '../../components/users/EditProfileDialog';
+import { Skeleton } from '../../components/ui/skeleton';
+
+export const Profile = () => {
+  const { user } = useAuth();
+  const [posts, setPosts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const fetchUserPosts = async () => {
+    try {
+      const { data } = await getPostsByUser(user.id);
+      setPosts(data);
+    } catch (error) {
+      console.error('Failed to fetch user posts:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchUserPosts();
+    }
+  }, [user]);
+
+  if (!user) {
+    return <div className="flex justify-center p-8">Loading user data...</div>;
+  }
+
+  return (
+    <div className="max-w-4xl mx-auto p-4">
+     
+      <div className="flex flex-col md:flex-row items-center gap-6 mb-8 p-6 bg-white rounded-lg shadow-sm">
+        <div className="relative">
+          <Avatar className="h-24 w-24 md:h-32 md:w-32">
+            <AvatarImage 
+              src={user.profile_picture || '/default-avatar.png'} 
+              alt={user.username}
+            />
+            <AvatarFallback className="text-2xl">
+              {user.username.charAt(0).toUpperCase()}
+            </AvatarFallback>
+          </Avatar>
+        </div>
+
+        <div className="flex-1 text-center md:text-left">
+          <h1 className="text-2xl font-bold">{user.username}</h1>
+          <p className="text-gray-600 mb-4">{user.email}</p>
+          
+          <div className="flex flex-wrap gap-2 justify-center md:justify-start">
+            <div className="px-3 py-1 bg-gray-100 rounded-full text-sm">
+              <span className="font-medium">{posts.length}</span> posts
+            </div>
+          </div>
+        </div>
+
+        <div className="w-full md:w-auto">
+          <Button 
+            variant="outline" 
+            onClick={() => setIsEditDialogOpen(true)}
+            className="w-full md:w-auto"
+          >
+            Edit Profile
+          </Button>
+        </div>
+      </div>
+
+     
+      <div className="mb-8">
+        <h2 className="text-xl font-semibold mb-4">Your Posts</h2>
+        
+        {isLoading ? (
+          <div className="space-y-4">
+            {[...Array(3)].map((_, i) => (
+              <Skeleton key={i} className="h-32 w-full rounded-lg" />
+            ))}
+          </div>
+        ) : posts.length === 0 ? (
+          <div className="text-center py-8">
+            <p className="text-gray-500">You haven't created any posts yet.</p>
+            <Button variant="link" className="mt-2">
+              Create your first post
+            </Button>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {posts.map((post) => (
+              <PostCard 
+                key={post.id} 
+                post={post}
+                onDelete={() => fetchUserPosts()}
+                onEdit={() => console.log('Edit post:', post)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+   
+      <EditProfileDialog 
+        open={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        onProfileUpdated={fetchUserPosts}
+      />
+    </div>
+  );
+};
