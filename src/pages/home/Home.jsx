@@ -42,7 +42,7 @@ export const Home = () => {
   const handleUpdate = async (postId, formData) => {
     try {
       const updatedPost = await updatePost(postId, formData);
-      setPosts(posts.map(post => 
+      setPosts(posts.map(post =>
         post.id === postId ? updatedPost : post
       ));
     } catch (err) {
@@ -52,7 +52,7 @@ export const Home = () => {
   };
 
   const handleProfileClick = () => {
-    navigate('/profile'); // Navigate to profile page
+    navigate('/profile');
   };
 
   useEffect(() => {
@@ -61,66 +61,80 @@ export const Home = () => {
     }
   }, [user]);
 
-  return (
-    <div className="max-w-2xl mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Your Feed</h1>
-        <div className="flex items-center gap-4">
-          <CreatePost onPostCreated={fetchPosts} />
-          <Button 
-            variant="ghost" 
-            className="p-0 rounded-full" 
-            onClick={handleProfileClick}
-          >
-            <Avatar className="h-10 w-10">
-              <AvatarImage 
-                src={user?.profile_picture} 
-                alt="User profile"
-              />
-              <AvatarFallback>
-                {user?.username?.charAt(0)?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-          </Button>
-        </div>
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center text-gray-500 text-xl">
+        Please log in to view your feed.
       </div>
-      
-      {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-md">
-          {error}
-        </div>
-      )}
-      
-      <div className="space-y-4">
-        {isLoading ? (
-          Array.from({ length: 3 }).map((_, i) => (
-            <div key={i} className="border rounded-lg p-4 space-y-3">
-              <div className="flex items-center space-x-2">
-                <Skeleton className="h-10 w-10 rounded-full" />
-                <div className="space-y-1">
-                  <Skeleton className="h-4 w-[100px]" />
-                  <Skeleton className="h-3 w-[80px]" />
-                </div>
-              </div>
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-60 w-full rounded-md" />
+    );
+  }
+
+  return (
+    <div className="min-h-screen w-full bg-gray-50">
+      {/* Padding container */}
+      <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
+        {/* Centered max-width feed */}
+        <div className=" mx-auto space-y-8">
+          {/* Header */}
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-gray-800">Your Feed</h1>
+            <div className="flex items-center gap-4">
+              <CreatePost onPostCreated={fetchPosts} />
+              <Button
+                variant="ghost"
+                className="p-0 rounded-full"
+                onClick={handleProfileClick}
+              >
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={user?.profile_picture} alt="User profile" />
+                  <AvatarFallback>
+                    {user?.username?.charAt(0)?.toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </Button>
             </div>
-          ))
-        ) : posts.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500">No posts yet. Create your first post!</p>
           </div>
-        ) : (
-          posts.map((post) => (
-            <PostCard
-              key={post.id}
-              post={post}
-              onDelete={handleDelete}
-              onUpdate={handleUpdate}
-            />
-          ))
-        )}
+
+          {/* Error message */}
+          {error && (
+            <div className="p-4 rounded-md bg-red-100 text-red-700 border border-red-200">
+              {error}
+            </div>
+          )}
+
+          {/* Posts list */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {isLoading ? (
+              Array.from({ length: 3 }).map((_, i) => (
+                <div key={i} className="border rounded-2xl p-5 shadow-sm bg-white animate-pulse">
+                  <div className="flex items-center space-x-3 mb-4">
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                    <div className="space-y-1 flex-1">
+                      <Skeleton className="h-4 w-24" />
+                      <Skeleton className="h-3 w-20" />
+                    </div>
+                  </div>
+                  <Skeleton className="h-4 w-full mb-3" />
+                  <Skeleton className="h-4 w-3/4 mb-3" />
+                  <Skeleton className="h-60 w-full rounded-xl" />
+                </div>
+              ))
+            ) : posts.length === 0 ? (
+              <div className="text-center py-20 text-gray-400 text-lg">
+                No posts yet. Create your first post!
+              </div>
+            ) : (
+              posts.map((post) => (
+                <PostCard
+                  key={post.id}
+                  post={post}
+                  onDelete={handleDelete}
+                  onUpdate={handleUpdate}
+                />
+              ))
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

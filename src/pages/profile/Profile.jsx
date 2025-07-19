@@ -55,7 +55,7 @@ export const Profile = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <div className=" mx-auto p-4">
       <div className="flex flex-col md:flex-row items-center gap-6 mb-8 p-6 bg-white rounded-lg shadow-sm">
         <div className="relative">
           <Avatar className="h-24 w-24 md:h-32 md:w-32">
@@ -97,34 +97,35 @@ export const Profile = () => {
         <h2 className="text-xl font-semibold mb-4">Your Posts</h2>
         
         {isLoading ? (
-          <div className="space-y-4">
-            {[...Array(3)].map((_, i) => (
-              <Skeleton key={i} className="h-32 w-full rounded-lg" />
-            ))}
-          </div>
-        ) : posts.length === 0 ? (
-          <div className="text-center py-8">
-            <p className="text-gray-500">You haven't created any posts yet.</p>
-            <Button 
-              variant="link" 
-              className="mt-2"
-              onClick={() => navigate('/create-post')}
-            >
-              Create your first post
-            </Button>
-          </div>
-        ) : (
-          <div className="space-y-4">
-            {posts.map((post) => (
-              <PostCard 
-                key={post.id} 
-                post={post}
-                onDelete={handleDeletePost}
-                onUpdate={() => fetchUserPosts()}
-              />
-            ))}
-          </div>
-        )}
+  <div className="space-y-4">
+    {[...Array(3)].map((_, i) => (
+      <Skeleton key={i} className="h-32 w-full rounded-lg" />
+    ))}
+  </div>
+) : posts.length === 0 ? (
+  <div className="text-center py-8">
+    <p className="text-gray-500">You haven't created any posts yet.</p>
+    <Button 
+      variant="link" 
+      className="mt-2"
+      onClick={() => navigate('/create-post')}
+    >
+      Create your first post
+    </Button>
+  </div>
+) : (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {posts.map((post) => (
+      <PostCard 
+        key={post.id} 
+        post={post}
+        onDelete={handleDeletePost}
+        onUpdate={() => fetchUserPosts()}
+      />
+    ))}
+  </div>
+)}
+
       </div>
 
       <EditProfileDialog 
@@ -135,3 +136,4 @@ export const Profile = () => {
     </div>
   );
 };
+
