@@ -6,6 +6,7 @@ import { Register } from './pages/auth/Register';
 
 import { PrivateRoute } from './components/auth/PrivateRoute';
 import { Profile } from './pages/profile/Profile';
+import NotfoundPage from './pages/NotfoundPage';
 
 export const App = () => {
   return (
@@ -30,7 +31,7 @@ export const App = () => {
               </PrivateRoute>
             }
           />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="*" element={<NotfoundPage/>} />
         </Routes>
       </Router>
     </AuthProvider>
