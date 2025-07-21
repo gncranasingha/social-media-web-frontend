@@ -7,12 +7,15 @@ import { Register } from './pages/auth/Register';
 import { PrivateRoute } from './components/auth/PrivateRoute';
 import { Profile } from './pages/profile/Profile';
 import NotfoundPage from './pages/NotfoundPage';
+import Layout from './pages/Layout';
 
 export const App = () => {
   return (
     <AuthProvider>
       <Router>
+        
         <Routes>
+          <Route path="/" element={<Layout />}>
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route
@@ -32,6 +35,7 @@ export const App = () => {
             }
           />
           <Route path="*" element={<NotfoundPage/>} />
+          </Route>
         </Routes>
       </Router>
     </AuthProvider>

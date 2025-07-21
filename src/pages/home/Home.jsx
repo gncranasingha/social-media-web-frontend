@@ -4,22 +4,13 @@ import { PostCard } from '../../components/posts/PostCard';
 import { CreatePost } from '../../components/posts/CreatePost';
 import { getPostsByUser, deletePost, updatePost } from '../../services/api';
 import { Skeleton } from "@/components/ui/skeleton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { useNavigate } from 'react-router-dom';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 export const Home = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-  const navigate = useNavigate();
+ 
 
   const fetchPosts = async () => {
     setIsLoading(true);
@@ -57,11 +48,7 @@ export const Home = () => {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate('/login');
-  };
-
+  
   useEffect(() => {
     if (user) {
       fetchPosts();
@@ -78,57 +65,26 @@ export const Home = () => {
 
   return (
     <div className="min-h-screen w-full bg-gray-50">
-      {/* Padding container */}
+     
       <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
-        {/* Centered max-width feed */}
+      
         <div className="mx-auto space-y-8">
-          {/* Header */}
+        
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-800">Your Feed</h1>
             <div className="flex items-center gap-4">
               <CreatePost onPostCreated={fetchPosts} />
-              
-              {/* Avatar with Dropdown */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="p-0 rounded-full hover:bg-transparent focus:bg-transparent"
-                  >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={user?.profile_picture} alt="User profile" />
-                      <AvatarFallback>
-                        {user?.username?.charAt(0)?.toUpperCase()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuItem 
-                    className="cursor-pointer"
-                    onClick={() => navigate('/profile')}
-                  >
-                    <span className="w-full">Profile</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem 
-                    className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
-                    onClick={handleLogout}
-                  >
-                    <span className="w-full">Logout</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
             </div>
           </div>
 
-          {/* Error message */}
+        
           {error && (
             <div className="p-4 rounded-md bg-red-100 text-red-700 border border-red-200">
               {error}
             </div>
           )}
 
-          {/* Posts list */}
+        
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {isLoading ? (
               Array.from({ length: 3 }).map((_, i) => (
