@@ -5,6 +5,6 @@
     "types": []
   },
   "files": [],
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "src/pages/Layout.jsx"],
   "exclude": ["src/test.ts", "src/**/*.spec.ts"]
 }
