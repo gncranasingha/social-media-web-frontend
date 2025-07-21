@@ -7,9 +7,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from 'react-router-dom';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export const Home = () => {
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [posts, setPosts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -51,8 +57,9 @@ export const Home = () => {
     }
   };
 
-  const handleProfileClick = () => {
-    navigate('/profile');
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -74,24 +81,43 @@ export const Home = () => {
       {/* Padding container */}
       <div className="w-full px-4 py-6 sm:px-6 lg:px-8">
         {/* Centered max-width feed */}
-        <div className=" mx-auto space-y-8">
+        <div className="mx-auto space-y-8">
           {/* Header */}
           <div className="flex justify-between items-center">
             <h1 className="text-3xl font-bold text-gray-800">Your Feed</h1>
             <div className="flex items-center gap-4">
               <CreatePost onPostCreated={fetchPosts} />
-              <Button
-                variant="ghost"
-                className="p-0 rounded-full"
-                onClick={handleProfileClick}
-              >
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={user?.profile_picture} alt="User profile" />
-                  <AvatarFallback>
-                    {user?.username?.charAt(0)?.toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-              </Button>
+              
+              {/* Avatar with Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="p-0 rounded-full hover:bg-transparent focus:bg-transparent"
+                  >
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={user?.profile_picture} alt="User profile" />
+                      <AvatarFallback>
+                        {user?.username?.charAt(0)?.toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end">
+                  <DropdownMenuItem 
+                    className="cursor-pointer"
+                    onClick={() => navigate('/profile')}
+                  >
+                    <span className="w-full">Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    className="cursor-pointer text-red-600 focus:text-red-600 focus:bg-red-50"
+                    onClick={handleLogout}
+                  >
+                    <span className="w-full">Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
 
